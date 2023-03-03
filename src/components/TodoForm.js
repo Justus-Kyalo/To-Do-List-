@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 
 function TodoForm(props) {
   const [input, setInput] = useState(props.edit ? props.edit.value : "");
-    // set for checing if edit value or not. If edit value, show the value when click edit.
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -16,42 +15,67 @@ function TodoForm(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    props.onSubmit({
-      id: Math.floor(Math.random() * 10000),
-      text: input,
-    });
+    if (props.edit) {
+      fetch(`/task/${props.edit.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ activity: input }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          props.onSubmit(data);
+          setInput("");
+        })
+        .catch((error) => console.error(error));
+    } else {
+      fetch("http://localhost:9292/task", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ activity: input }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          props.onSubmit(data);
+          setInput("");
+        })
+        .catch((error) => console.error(error));
+    }
+  };
 
-    setInput("");
+  const handleDelete = () => {
+    fetch(`http://localhost:9292/task${props.edit.id}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then(() => {
+        props.onDelete(props.edit.id);
+        setInput("");
+      })
+      .catch((error) => console.error(error));
   };
 
   return (
     <form className="todo-form" onSubmit={handleSubmit}>
-      {props.edit ? (
-        <>
-          <input
-            type="text"
-            placeholder="Update your item"
-            value={input}
-            name="text"
-            className="todo-input"
-            onChange={handleChange}
-            ref={inputRef}
-          />
-          <button className="todo-button"> Update </button>
-        </>
-      ) : (
-        <>
-          <input
-            type="text"
-            placeholder="Add a todo"
-            value={input}
-            name="text"
-            className="todo-input"
-            onChange={handleChange}
-            ref={inputRef}
-          />
-          <button className="todo-button"> Add Todo</button>
-        </>
+      <input
+        type="text"
+        placeholder={props.edit ? "Update your item" : "Add a todo"}
+        value={input}
+        name="text"
+        className="todo-input"
+        onChange={handleChange}
+        ref={inputRef}
+      />
+      <button className="todo-button">
+        {props.edit ? "Update" : "Add Todo"}
+      </button>
+      {props.edit && (
+        <button className="todo-button" onClick={handleDelete}>
+          Delete
+        </button>
       )}
     </form>
   );
