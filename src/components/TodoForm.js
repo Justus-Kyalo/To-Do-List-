@@ -16,7 +16,7 @@ function TodoForm(props) {
     e.preventDefault();
 
     if (props.edit) {
-      fetch(`/task/${props.edit.id}`, {
+      fetch(`http://localhost:9292/task/${props.edit.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
