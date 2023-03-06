@@ -5,10 +5,10 @@
 ![screnshot.png](https://github.com/RemmyKyalo/To-Do-List-/blob/master/todos.png)
 
 # Features
-Users can create tasks # add todo
-Users can edit/update tasks # update todo
-Users can delete tasks # X todo
-Users can view all the tasks in the list
+- Users can create tasks # add todo
+- Users can edit/update tasks # update todo
+- Users can delete tasks # X todo
+- Users can view all the tasks in the list
 # Technologies Used
 - React.js
 - Sinatra
